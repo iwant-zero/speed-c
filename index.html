@@ -10,6 +10,8 @@
       --line:rgba(255,255,255,.10);
       --shadow: 0 10px 30px rgba(0,0,0,.35);
       --r:14px;
+      --accent: rgba(120,160,255,.28);
+      --accent2: rgba(160,190,255,.35);
     }
     *{box-sizing:border-box}
     body{
@@ -33,6 +35,7 @@
     .pill{
       font-size:12px; color:var(--muted);
       padding:7px 10px; border:1px solid var(--line); border-radius:999px; background:rgba(0,0,0,.15);
+      white-space:nowrap;
     }
     .grid{margin-top:14px; display:grid; grid-template-columns: 1.2fr .8fr; gap:14px;}
     @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
@@ -57,10 +60,29 @@
     }
     button:hover{transform: translateY(-1px); transition:.12s}
     button.primary{
-      background:linear-gradient(180deg, rgba(120,160,255,.28), rgba(50,90,255,.18));
-      border-color: rgba(160,190,255,.35);
+      background:linear-gradient(180deg, var(--accent), rgba(50,90,255,.18));
+      border-color: var(--accent2);
     }
     button.ghost{background:rgba(0,0,0,.08)}
+    button:disabled{opacity:.55; cursor:not-allowed; transform:none}
+
+    /* ✅ 탭 버튼 */
+    .tabrow{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+    .tab{
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:900;
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.14);
+      color:var(--muted);
+    }
+    .tab.active{
+      color:var(--text);
+      border-color: var(--accent2);
+      background:linear-gradient(180deg, rgba(120,160,255,.22), rgba(50,90,255,.12));
+    }
+
     .sets{display:flex; flex-direction:column; gap:10px}
     .set{border:1px solid var(--line); border-radius:12px; background:rgba(0,0,0,.14); padding:12px;}
     .set .top{display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between; margin-bottom:8px;}
@@ -83,6 +105,7 @@
     .c5{background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.55), rgba(255,255,255,0) 45%), linear-gradient(180deg,#4dabf7,#1864ab);}
     .c6{background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.55), rgba(255,255,255,0) 45%), linear-gradient(180deg,#b197fc,#7048e8);}
     .c7{background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.55), rgba(255,255,255,0) 45%), linear-gradient(180deg,#f783ac,#c2255c);}
+
     .miniGrid{display:grid; grid-template-columns: repeat(10, minmax(0,1fr)); gap:8px; margin-top:10px;}
     @media (max-width: 420px){ .miniGrid{grid-template-columns: repeat(8, minmax(0,1fr));} }
     .mini{border:1px solid var(--line); border-radius:10px; padding:8px 8px; background:rgba(0,0,0,.14); display:flex; flex-direction:column; gap:4px; align-items:flex-start;}
@@ -100,12 +123,16 @@
     <header>
       <div class="title">
         <h1>스피드키노 빈도 기반 추천기 (Pick10)</h1>
-        <p>무작위 생성 없이, 저장된 <b>추첨번호 빈도(누적/최근)</b>로 추천 조합을 만들고 버튼 재클릭 시 <b>cycle</b>로 조합이 바뀝니다.</p>
+        <p>
+          무작위 생성 없이, 저장된 <b>추첨번호 빈도(누적/최근)</b>로 추천 조합을 만들고
+          버튼 재클릭 시 <b>cycle</b>로 조합이 바뀝니다.
+        </p>
       </div>
       <div class="pillrow">
         <div class="pill" id="pillUpdated">데이터 갱신: -</div>
         <div class="pill" id="pillDraws">누적 회차: -</div>
         <div class="pill" id="pillLatest">최신 회차: -</div>
+        <div class="pill" id="pillRecent">최근 기준: -</div>
       </div>
     </header>
 
@@ -124,6 +151,7 @@
           <div class="muted" style="margin-bottom:10px">
             * “번호 호출”처럼 1개씩 표시되지만, 조합 자체는 <b>데이터 기반 규칙</b>으로 확정된 값입니다.
           </div>
+
           <div id="sets" class="sets"></div>
 
           <div class="hint">
@@ -145,6 +173,16 @@
           <div class="muted" id="topNote">-</div>
         </div>
         <div class="bd">
+          <!-- ✅ 최근 1/7/30 탭 -->
+          <div class="muted" style="margin-bottom:8px">
+            <b>최근 기준(가중)</b>을 바꾸면 추천이 즉시 다시 계산됩니다.
+          </div>
+          <div class="tabrow" style="margin-bottom:10px">
+            <button class="tab" id="tab1"  data-days="1">최근 1일</button>
+            <button class="tab" id="tab7"  data-days="7">최근 7일</button>
+            <button class="tab" id="tab30" data-days="30">최근 30일</button>
+          </div>
+
           <div id="topGrid" class="miniGrid"></div>
 
           <div style="height:10px"></div>
@@ -159,19 +197,20 @@
   </div>
 
 <script>
-  // ✅ Pages 소스가 root든 speed-c든 둘 다 대응하도록 후보 경로 2개 준비
-  const FREQ_CANDIDATES = [
-    "./data/speed_freq.json",   // Pages 소스가 speed-c/ 일 때
-    "../data/speed_freq.json"   // Pages 소스가 /(root) 일 때
-  ];
-  const DRAWS_CANDIDATES = [
-    "./data/speed_draws.json",
-    "../data/speed_draws.json"
-  ];
+  // Pages 소스가 root든 speed-c든 둘 다 대응
+  const FREQ_CANDIDATES = ["./data/speed_freq.json", "../data/speed_freq.json"];
+  const DRAWS_CANDIDATES = ["./data/speed_draws.json", "../data/speed_draws.json"];
 
   const el = (id) => document.getElementById(id);
 
-  const state = { freq:null, draws:[], mode:10, cycle:0 };
+  const state = {
+    freq: null,
+    draws: [],
+    mode: 10,
+    cycle: 0,
+    recentDays: 7,
+    recent: { freq: null, rank: null, totalBalls: 0, days: 7, dates: [] }
+  };
 
   const pad2 = (n)=> String(n).padStart(2,"0");
   const colorClass = (n)=>{
@@ -205,12 +244,20 @@
     localStorage.setItem(key, String(v));
   }
 
+  function loadRecentDays(){
+    const v = Number(localStorage.getItem("speedkino_recent_days") || "7");
+    if (v === 1 || v === 7 || v === 30) return v;
+    return 7;
+  }
+  function saveRecentDays(v){
+    localStorage.setItem("speedkino_recent_days", String(v));
+  }
+
   async function tryFetchJson(url){
     const res = await fetch(url + "?v=" + Date.now());
     if(!res.ok) return { ok:false, status:res.status };
     return { ok:true, json: await res.json() };
   }
-
   async function fetchJsonWithFallback(candidates){
     let lastStatus = 0;
     for(const u of candidates){
@@ -221,14 +268,104 @@
     throw new Error(`HTTP ${lastStatus || 404}`);
   }
 
-  function buildScoreRank(freq, recent, wAll=0.7, wRec=1.3){
-    const score = [];
-    for(let n=1; n<=70; n++){
-      const all = Number(freq[String(n)] || 0);
-      const rec = Number(recent[String(n)] || 0);
-      score.push({ n, s: all*wAll + rec*wRec, all, rec });
+  // ✅ draws 기반으로 최근 N일(서로 다른 date N개)의 빈도를 계산
+  function buildFreqFromDraws(draws){
+    const freq = {};
+    for(let n=1;n<=70;n++) freq[String(n)] = 0;
+    let totalBalls = 0;
+
+    for(const d of draws){
+      const nums = Array.isArray(d?.numbers) ? d.numbers : [];
+      for(const n of nums){
+        if(n>=1 && n<=70){
+          freq[String(n)] += 1;
+          totalBalls += 1;
+        }
+      }
     }
-    score.sort((a,b)=> (b.s-a.s) || (b.rec-a.rec) || (b.all-a.all) || (a.n-b.n));
+
+    const rank = Object.entries(freq)
+      .map(([k,v])=>({ n:Number(k), count:v }))
+      .sort((a,b)=> (b.count-a.count) || (a.n-b.n));
+
+    return { freq, rank, totalBalls };
+  }
+
+  function pickRecentDrawsByDays(allDraws, days){
+    const dates = [];
+    const seen = new Set();
+
+    for(const d of allDraws){
+      const dt = d?.date ? String(d.date) : null;
+      if(!dt) continue;
+      if(!seen.has(dt)){
+        seen.add(dt);
+        dates.push(dt);
+        if(dates.length >= days) break;
+      }
+    }
+
+    if(dates.length){
+      const set = new Set(dates);
+      const picked = allDraws.filter(d => d?.date && set.has(String(d.date)));
+      return { picked, dates };
+    }
+
+    // date가 없으면 최소 동작(앞부분 N개)
+    const fallbackCount = Math.min(allDraws.length, days * 288);
+    return { picked: allDraws.slice(0, fallbackCount), dates: [] };
+  }
+
+  function applyRecentDays(days){
+    state.recentDays = days;
+    saveRecentDays(days);
+
+    // draws가 있으면 날짜 기준으로 최근 N일 빈도를 계산
+    if(Array.isArray(state.draws) && state.draws.length){
+      const { picked, dates } = pickRecentDrawsByDays(state.draws, days);
+      const built = buildFreqFromDraws(picked);
+      state.recent = { ...built, days, dates };
+    } else {
+      // draws가 없으면 freq.json에 들어있는 recentFreq(고정 window)로 fallback
+      const f = state.freq || {};
+      const recentFreq = f.recentFreq || {};
+      const recentRank = f.recentRank || [];
+      const totalBalls = Object.values(recentFreq).reduce((a,b)=>a+Number(b||0),0);
+      state.recent = {
+        freq: recentFreq,
+        rank: recentRank,
+        totalBalls: totalBalls,
+        days,
+        dates: []
+      };
+    }
+
+    setRecentTabsActive();
+    setHeaderPills();
+    renderTop20();
+    renderSets(state.mode, state.cycle);
+  }
+
+  function setRecentTabsActive(){
+    const map = {1:"tab1",7:"tab7",30:"tab30"};
+    ["tab1","tab7","tab30"].forEach(id => el(id).classList.remove("active"));
+    el(map[state.recentDays] || "tab7").classList.add("active");
+  }
+
+  // ✅ “창 크기 영향” 줄이려고 비율(출현율)로 가중 스코어 계산
+  function buildScoreRankNormalized(allFreq, allTotalBalls, recentFreq, recentTotalBalls, wAll=0.7, wRec=1.3){
+    const score = [];
+    const denomAll = Math.max(1, Number(allTotalBalls || 0));
+    const denomRec = Math.max(1, Number(recentTotalBalls || 0));
+
+    for(let n=1;n<=70;n++){
+      const k = String(n);
+      const allRate = Number(allFreq?.[k] || 0) / denomAll;
+      const recRate = Number(recentFreq?.[k] || 0) / denomRec;
+      const s = allRate * wAll + recRate * wRec;
+      score.push({ n, s, allRate, recRate });
+    }
+    score.sort((a,b)=> (b.s-a.s) || (b.recRate-a.recRate) || (b.allRate-a.allRate) || (a.n-b.n));
     return score.map(x=>x.n);
   }
 
@@ -326,9 +463,19 @@
 
   function generateSets(mode, cycle){
     const f = state.freq;
+
     const overallNums = (f.rank || []).map(x=>x.n);
-    const recentNums  = (f.recentRank || []).map(x=>x.n);
-    const scoreNums   = buildScoreRank(f.freq || {}, f.recentFreq || {});
+
+    const recentRankArr = state.recent.rank || [];
+    const recentNums = recentRankArr.map(x=>x.n);
+
+    const scoreNums = buildScoreRankNormalized(
+      f.freq || {},
+      f.totalBalls || 0,
+      state.recent.freq || {},
+      state.recent.totalBalls || 0,
+      0.7, 1.3
+    );
 
     const latestSeed = Number(f.latest?.dhRound || 0) || 0;
     const step = 11;
@@ -454,7 +601,12 @@
     const top = (f.rank || []).slice(0, 20);
     const totalBalls = Number(f.totalBalls || 0);
 
-    el("topNote").textContent = totalBalls ? `총 표본(볼): ${totalBalls.toLocaleString()}` : "-";
+    // 표시: 최근 기준도 함께
+    const rec = state.recent;
+    const recDates = (rec.dates && rec.dates.length) ? `${rec.dates[rec.dates.length-1]} ~ ${rec.dates[0]}` : "";
+    const recInfo = recDates ? ` · 최근(${rec.days}일): ${recDates}` : ` · 최근(${rec.days}일)`;
+
+    el("topNote").textContent = totalBalls ? `총 표본(볼): ${totalBalls.toLocaleString()}${recInfo}` : `-${recInfo}`;
 
     top.forEach((x)=>{
       const div = document.createElement("div");
@@ -510,33 +662,16 @@
     el("pillUpdated").textContent = `데이터 갱신: ${f.updatedAt || "-"}`;
     el("pillDraws").textContent = `누적 회차: ${(f.totalDraws || 0).toLocaleString()}회`;
     el("pillLatest").textContent = `최신 회차: ${f.latest?.dhRound ?? "-"}`;
+
+    const rec = state.recent;
+    const recDates = (rec.dates && rec.dates.length) ? `${rec.dates[rec.dates.length-1]} ~ ${rec.dates[0]}` : "";
+    el("pillRecent").textContent = recDates ? `최근 기준: ${rec.days}일 (${recDates})` : `최근 기준: ${rec.days}일`;
   }
 
   function showError(msg){
     const box = el("errBox");
     box.style.display = "block";
     box.textContent = msg;
-  }
-
-  async function boot(){
-    try{
-      state.freq = await fetchJsonWithFallback(FREQ_CANDIDATES);
-      try{ state.draws = await fetchJsonWithFallback(DRAWS_CANDIDATES); }
-      catch{ state.draws = []; }
-
-      setHeaderPills();
-      renderTop20();
-      renderRecentDraws();
-
-      state.mode = 10;
-      state.cycle = loadCycle(state.mode);
-      renderSets(state.mode, state.cycle);
-    }catch(e){
-      showError(
-        "데이터 로드에 실패했습니다. (1) Actions 커밋에 speed-c/data/*.json 또는 data/*.json이 존재하는지 확인, (2) Pages 소스가 어디든 이 버전은 자동 대응합니다.\n" +
-        String(e?.message || e)
-      );
-    }
   }
 
   function setMode(mode){
@@ -550,10 +685,46 @@
     renderSets(state.mode, state.cycle);
   }
 
+  async function boot(){
+    try{
+      state.freq = await fetchJsonWithFallback(FREQ_CANDIDATES);
+      try{ state.draws = await fetchJsonWithFallback(DRAWS_CANDIDATES); }
+      catch{ state.draws = []; }
+
+      state.recentDays = loadRecentDays();
+
+      state.mode = 10;
+      state.cycle = loadCycle(state.mode);
+
+      // ✅ 최근 기준 적용(탭/추천/표시 갱신)
+      applyRecentDays(state.recentDays);
+
+      renderRecentDraws();
+      renderTop20();
+      renderSets(state.mode, state.cycle);
+
+    }catch(e){
+      showError(
+        "데이터 로드에 실패했습니다. (1) Actions 커밋에 speed-c/data/*.json 또는 data/*.json이 있는지 확인, (2) Pages 소스가 어디든 이 버전은 자동 대응합니다.\n" +
+        String(e?.message || e)
+      );
+    }
+  }
+
+  // 추천 버튼
   el("btn1").addEventListener("click", ()=> setMode(1));
   el("btn5").addEventListener("click", ()=> setMode(5));
   el("btn10").addEventListener("click", ()=> setMode(10));
   el("btnNext").addEventListener("click", ()=> nextCycle());
+
+  // 최근 탭
+  ["tab1","tab7","tab30"].forEach(id=>{
+    el(id).addEventListener("click", (e)=>{
+      const days = Number(e.currentTarget.getAttribute("data-days") || "7");
+      if(days === state.recentDays) return;
+      applyRecentDays(days);
+    });
+  });
 
   boot();
 </script>
