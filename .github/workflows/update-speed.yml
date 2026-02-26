@@ -1,0 +1,30 @@
+name: Update SpeedKeno Data (Scheduled)
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"   # 15분마다 (UTC)
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Update JSON data
+        run: node scripts/update_speed.mjs update
+
+      - name: Commit updated data
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(data): update speedkino draws/frequency"
+          file_pattern: "data/speed_draws.json data/speed_freq.json"
