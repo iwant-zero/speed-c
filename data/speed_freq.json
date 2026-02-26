@@ -1,0 +1,14 @@
+{
+  "updatedAt": null,
+  "source": { "api": null, "note": "워크플로우 실행 후 자동 생성/갱신" },
+  "range": { "min": 1, "max": 70 },
+  "numbersPerDraw": null,
+  "totalDraws": 0,
+  "totalBalls": 0,
+  "latest": null,
+  "freq": {},
+  "rank": [],
+  "recentWindow": 288,
+  "recentFreq": {},
+  "recentRank": []
+}
