@@ -19,16 +19,14 @@
                   var(--bg);
       color:var(--text);
     }
-    a{color:inherit}
     .wrap{max-width:1100px; margin:0 auto; padding:22px 16px 40px}
     header{
       display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end; justify-content:space-between;
-      padding:18px; border:1px solid var(--line); border-radius:var(--r); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      padding:18px; border:1px solid var(--line); border-radius:var(--r);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
       box-shadow:var(--shadow);
     }
-    .title{
-      display:flex; flex-direction:column; gap:6px;
-    }
+    .title{display:flex; flex-direction:column; gap:6px;}
     .title h1{margin:0; font-size:20px; letter-spacing:-.2px}
     .title p{margin:0; color:var(--muted); font-size:13px; line-height:1.45}
     .pillrow{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
@@ -36,24 +34,15 @@
       font-size:12px; color:var(--muted);
       padding:7px 10px; border:1px solid var(--line); border-radius:999px; background:rgba(0,0,0,.15);
     }
-
-    .grid{
-      margin-top:14px;
-      display:grid; grid-template-columns: 1.2fr .8fr;
-      gap:14px;
-    }
+    .grid{margin-top:14px; display:grid; grid-template-columns: 1.2fr .8fr; gap:14px;}
     @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
-
     .card{
-      border:1px solid var(--line);
-      border-radius:var(--r);
+      border:1px solid var(--line); border-radius:var(--r);
       background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
-      box-shadow:var(--shadow);
-      overflow:hidden;
+      box-shadow:var(--shadow); overflow:hidden;
     }
     .card .hd{
-      padding:14px 14px 12px;
-      border-bottom:1px solid var(--line);
+      padding:14px 14px 12px; border-bottom:1px solid var(--line);
       display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between;
       background:rgba(0,0,0,.12);
     }
@@ -72,17 +61,9 @@
       border-color: rgba(160,190,255,.35);
     }
     button.ghost{background:rgba(0,0,0,.08)}
-    button:disabled{opacity:.55; cursor:not-allowed; transform:none}
-
     .sets{display:flex; flex-direction:column; gap:10px}
-    .set{
-      border:1px solid var(--line); border-radius:12px; background:rgba(0,0,0,.14);
-      padding:12px;
-    }
-    .set .top{
-      display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between;
-      margin-bottom:8px;
-    }
+    .set{border:1px solid var(--line); border-radius:12px; background:rgba(0,0,0,.14); padding:12px;}
+    .set .top{display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between; margin-bottom:8px;}
     .set .label{font-size:13px; color:var(--muted)}
     .set .meta{font-size:12px; color:var(--muted)}
     .balls{display:flex; flex-wrap:wrap; gap:8px}
@@ -94,11 +75,7 @@
       box-shadow: 0 10px 18px rgba(0,0,0,.28), inset 0 0 0 1px rgba(0,0,0,.15);
       user-select:none;
     }
-    .ball.ghost{
-      background:rgba(255,255,255,.06);
-      color:rgba(255,255,255,.55);
-    }
-    /* 구간별 컬러(1~70) */
+    .ball.ghost{background:rgba(255,255,255,.06); color:rgba(255,255,255,.55);}
     .c1{background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.55), rgba(255,255,255,0) 45%), linear-gradient(180deg,#ff6b6b,#e63946);}
     .c2{background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.55), rgba(255,255,255,0) 45%), linear-gradient(180deg,#ffa94d,#f76707);}
     .c3{background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.55), rgba(255,255,255,0) 45%), linear-gradient(180deg,#ffd43b,#f59f00);}
@@ -106,44 +83,15 @@
     .c5{background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.55), rgba(255,255,255,0) 45%), linear-gradient(180deg,#4dabf7,#1864ab);}
     .c6{background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.55), rgba(255,255,255,0) 45%), linear-gradient(180deg,#b197fc,#7048e8);}
     .c7{background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.55), rgba(255,255,255,0) 45%), linear-gradient(180deg,#f783ac,#c2255c);}
-
-    .miniGrid{
-      display:grid; grid-template-columns: repeat(10, minmax(0,1fr));
-      gap:8px;
-      margin-top:10px;
-    }
+    .miniGrid{display:grid; grid-template-columns: repeat(10, minmax(0,1fr)); gap:8px; margin-top:10px;}
     @media (max-width: 420px){ .miniGrid{grid-template-columns: repeat(8, minmax(0,1fr));} }
-
-    .mini{
-      border:1px solid var(--line); border-radius:10px; padding:8px 8px;
-      background:rgba(0,0,0,.14);
-      display:flex; flex-direction:column; gap:4px; align-items:flex-start;
-    }
+    .mini{border:1px solid var(--line); border-radius:10px; padding:8px 8px; background:rgba(0,0,0,.14); display:flex; flex-direction:column; gap:4px; align-items:flex-start;}
     .mini b{font-size:13px}
     .mini span{font-size:11px; color:var(--muted)}
-
-    .hint{
-      margin-top:12px;
-      padding:10px 12px;
-      border:1px dashed rgba(255,255,255,.18);
-      border-radius:12px;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.5;
-      background:rgba(0,0,0,.10);
-    }
-
-    .err{
-      padding:12px; border:1px solid rgba(255,120,120,.35); background:rgba(255,120,120,.08);
-      border-radius:12px; color:#ffd7d7; font-size:13px; line-height:1.45;
-    }
-
+    .hint{margin-top:12px; padding:10px 12px; border:1px dashed rgba(255,255,255,.18); border-radius:12px; color:var(--muted); font-size:12px; line-height:1.5; background:rgba(0,0,0,.10);}
+    .err{padding:12px; border:1px solid rgba(255,120,120,.35); background:rgba(255,120,120,.08); border-radius:12px; color:#ffd7d7; font-size:13px; line-height:1.45;}
     .krow{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
-    .kbd{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size:12px; padding:3px 7px; border-radius:8px;
-      border:1px solid var(--line); background:rgba(0,0,0,.2); color:var(--text);
-    }
+    .kbd{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:12px; padding:3px 7px; border-radius:8px; border:1px solid var(--line); background:rgba(0,0,0,.2); color:var(--text);}
   </style>
 </head>
 
@@ -152,10 +100,7 @@
     <header>
       <div class="title">
         <h1>스피드키노 빈도 기반 추천기 (Pick10)</h1>
-        <p>
-          무작위 생성 없이, 저장된 <b>추첨번호 빈도(누적/최근)</b>로 추천 조합을 만들고,
-          버튼을 다시 누르면 <b>데이터 기반 순환(cycle)</b>으로 조합이 바뀝니다.
-        </p>
+        <p>무작위 생성 없이, 저장된 <b>추첨번호 빈도(누적/최근)</b>로 추천 조합을 만들고 버튼 재클릭 시 <b>cycle</b>로 조합이 바뀝니다.</p>
       </div>
       <div class="pillrow">
         <div class="pill" id="pillUpdated">데이터 갱신: -</div>
@@ -179,12 +124,11 @@
           <div class="muted" style="margin-bottom:10px">
             * “번호 호출”처럼 1개씩 표시되지만, 조합 자체는 <b>데이터 기반 규칙</b>으로 확정된 값입니다.
           </div>
-
           <div id="sets" class="sets"></div>
 
           <div class="hint">
             <div class="krow" style="margin-bottom:6px">
-              이슈에서 자동 추천을 받으려면:
+              이슈에서 자동 추천:
               <span class="kbd">/speed</span>
               <span class="kbd">/speed 1</span>
               <span class="kbd">/speed 5</span>
@@ -215,22 +159,22 @@
   </div>
 
 <script>
-  const FREQ_URL = "../data/speed_freq.json";
-  const DRAWS_URL = "../data/speed_draws.json";
+  // ✅ Pages 소스가 root든 speed-c든 둘 다 대응하도록 후보 경로 2개 준비
+  const FREQ_CANDIDATES = [
+    "./data/speed_freq.json",   // Pages 소스가 speed-c/ 일 때
+    "../data/speed_freq.json"   // Pages 소스가 /(root) 일 때
+  ];
+  const DRAWS_CANDIDATES = [
+    "./data/speed_draws.json",
+    "../data/speed_draws.json"
+  ];
 
   const el = (id) => document.getElementById(id);
 
-  const state = {
-    freq: null,
-    draws: [],
-    mode: 10,
-    cycle: 0,
-  };
+  const state = { freq:null, draws:[], mode:10, cycle:0 };
 
-  function pad2(n){ return String(n).padStart(2,"0"); }
-
-  function colorClass(n){
-    // 1~10 / 11~20 / 21~30 / 31~40 / 41~50 / 51~60 / 61~70
+  const pad2 = (n)=> String(n).padStart(2,"0");
+  const colorClass = (n)=>{
     if(n<=10) return "c1";
     if(n<=20) return "c2";
     if(n<=30) return "c3";
@@ -238,7 +182,7 @@
     if(n<=50) return "c5";
     if(n<=60) return "c6";
     return "c7";
-  }
+  };
 
   function stats(nums){
     const underLine = 35;
@@ -261,11 +205,20 @@
     localStorage.setItem(key, String(v));
   }
 
-  async function fetchJson(url){
-    // 캐시 방지용 쿼리(무작위 아님, 단순 갱신 확인)
+  async function tryFetchJson(url){
     const res = await fetch(url + "?v=" + Date.now());
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
+    if(!res.ok) return { ok:false, status:res.status };
+    return { ok:true, json: await res.json() };
+  }
+
+  async function fetchJsonWithFallback(candidates){
+    let lastStatus = 0;
+    for(const u of candidates){
+      const r = await tryFetchJson(u);
+      if(r.ok) return r.json;
+      lastStatus = r.status || lastStatus;
+    }
+    throw new Error(`HTTP ${lastStatus || 404}`);
   }
 
   function buildScoreRank(freq, recent, wAll=0.7, wRec=1.3){
@@ -273,8 +226,7 @@
     for(let n=1; n<=70; n++){
       const all = Number(freq[String(n)] || 0);
       const rec = Number(recent[String(n)] || 0);
-      const s = all*wAll + rec*wRec;
-      score.push({ n, s, all, rec });
+      score.push({ n, s: all*wAll + rec*wRec, all, rec });
     }
     score.sort((a,b)=> (b.s-a.s) || (b.rec-a.rec) || (b.all-a.all) || (a.n-b.n));
     return score.map(x=>x.n);
@@ -282,7 +234,6 @@
 
   function makePickSet({ baseRankNums, plan, caps, offset, step }){
     const underLine = 35;
-
     const top = baseRankNums.slice(0, plan.topCut);
     const mid = baseRankNums.slice(plan.topCut, plan.midCut);
     const low = baseRankNums.slice(plan.midCut);
@@ -337,10 +288,7 @@
         for(let i=0; i<maxTries && picked.length<10 && need>0; i++){
           const idx = (seedOff + i*step) % arr.length;
           const n = arr[idx];
-          if(canAdd(n)){
-            add(n);
-            need--;
-          }
+          if(canAdd(n)){ add(n); need--; }
         }
       };
 
@@ -359,10 +307,7 @@
       if(picked.length<10){
         for(const n of baseRankNums){
           if(picked.length>=10) break;
-          if(!used.has(n)){
-            used.add(n);
-            picked.push(n);
-          }
+          if(!used.has(n)){ used.add(n); picked.push(n); }
         }
       }
 
@@ -428,7 +373,7 @@
       { label:"짝수 우세(4:6)", base:"score",
         plan:{topCut:24, midCut:52, topN:6, midN:3, lowN:1},
         caps:{maxOdd:4, maxEven:6, maxUnder:5, maxOver:5, minGap:1, uniqueLastDigit:false}
-      },
+      }
     ];
 
     const baseBy = (which)=>{
@@ -437,15 +382,12 @@
       return scoreNums.length ? scoreNums : (overallNums.length ? overallNums : recentNums);
     };
 
-    const need = mode;
     const sets = [];
-    for(let i=0;i<need;i++){
+    for(let i=0;i<mode;i++){
       const r = recipes[i % recipes.length];
       const baseRankNums = baseBy(r.base);
-
       const offset = (latestSeed + (cycle*29) + i*17 + 31) % Math.max(1, baseRankNums.length);
       const nums = makePickSet({ baseRankNums, plan:r.plan, caps:r.caps, offset, step });
-
       sets.push({ label:r.label, nums });
     }
     return sets;
@@ -453,15 +395,12 @@
 
   function renderBallsAnimated(container, nums){
     container.innerHTML = "";
-    // 먼저 ? 표시
     nums.forEach(()=> {
       const s = document.createElement("span");
       s.className = "ball ghost";
       s.textContent = "?";
       container.appendChild(s);
     });
-
-    // 번호 호출처럼 하나씩 확정 표시
     nums.forEach((n, i)=>{
       setTimeout(()=>{
         const b = container.children[i];
@@ -474,7 +413,6 @@
   function renderSets(mode, cycle){
     const box = el("sets");
     box.innerHTML = "";
-
     const sets = generateSets(mode, cycle);
 
     sets.forEach((s, idx)=>{
@@ -502,7 +440,6 @@
 
       wrap.appendChild(top);
       wrap.appendChild(balls);
-
       box.appendChild(wrap);
 
       renderBallsAnimated(balls, s.nums);
@@ -559,7 +496,6 @@
       wrap.appendChild(balls);
       box.appendChild(wrap);
 
-      // 최근 추첨번호는 “즉시 표시”
       (d.numbers || []).slice(0, 20).forEach((n)=>{
         const b = document.createElement("span");
         b.className = "ball " + colorClass(n);
@@ -584,13 +520,9 @@
 
   async function boot(){
     try{
-      const freq = await fetchJson(FREQ_URL);
-      state.freq = freq;
-
-      try{
-        const draws = await fetchJson(DRAWS_URL);
-        state.draws = Array.isArray(draws) ? draws : [];
-      }catch{ state.draws = []; }
+      state.freq = await fetchJsonWithFallback(FREQ_CANDIDATES);
+      try{ state.draws = await fetchJsonWithFallback(DRAWS_CANDIDATES); }
+      catch{ state.draws = []; }
 
       setHeaderPills();
       renderTop20();
@@ -598,11 +530,10 @@
 
       state.mode = 10;
       state.cycle = loadCycle(state.mode);
-
       renderSets(state.mode, state.cycle);
     }catch(e){
       showError(
-        "데이터 로드에 실패했습니다. (1) GitHub Actions가 data/*.json을 갱신했는지 확인하거나, (2) GitHub Pages 경로 설정을 확인해 주세요.\n" +
+        "데이터 로드에 실패했습니다. (1) Actions 커밋에 speed-c/data/*.json 또는 data/*.json이 존재하는지 확인, (2) Pages 소스가 어디든 이 버전은 자동 대응합니다.\n" +
         String(e?.message || e)
       );
     }
@@ -611,9 +542,8 @@
   function setMode(mode){
     state.mode = mode;
     state.cycle = loadCycle(mode);
-    renderSets(mode, state.cycle);
+    renderSets(state.mode, state.cycle);
   }
-
   function nextCycle(){
     state.cycle += 1;
     saveCycle(state.mode, state.cycle);
