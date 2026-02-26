@@ -1,0 +1,82 @@
+name: SpeedKeno Recommend (Issue)
+
+on:
+  issues:
+    types: [opened]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  recommend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Parse command
+        id: parse
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          TITLE: ${{ github.event.issue.title }}
+          BODY_ISSUE: ${{ github.event.issue.body }}
+          BODY_COMMENT: ${{ github.event.comment.body }}
+        run: |
+          node - <<'NODE'
+          const fs = require("fs");
+
+          const event = process.env.EVENT_NAME || "";
+          const title = process.env.TITLE || "";
+          const body = (event === "issue_comment" ? (process.env.BODY_COMMENT || "") : (process.env.BODY_ISSUE || "")) + "\n" + title;
+
+          // 명령 예:
+          // /speed
+          // /speed 5
+          // /스피드키노 10
+          // 스피드키노 추천 1개
+          let count = "";
+
+          const m1 = body.match(/\/(?:speed|speedkino|스피드|스피드키노)\s*(1|5|10)?\b/i);
+          if (m1) count = m1[1] || "10";
+
+          if (!count) {
+            const m2 = body.match(/(?:스피드키노|speedkino).*?(1|5|10)\s*개?/i);
+            if (m2) count = m2[1];
+          }
+
+          if (!count) {
+            const m3 = body.match(/(?:recommend|추천).*?(1|5|10)\b/i);
+            if (m3) count = m3[1];
+          }
+
+          const ok = Boolean(count);
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `ok=${ok}\ncount=${count}\n`);
+          NODE
+
+      - name: Skip if not a speed command
+        if: steps.parse.outputs.ok != 'true'
+        run: echo "No speed command found. Skip."
+
+      - name: Update data (fresh before recommend)
+        if: steps.parse.outputs.ok == 'true'
+        run: node scripts/update_speed.mjs update
+
+      - name: Build comment markdown
+        if: steps.parse.outputs.ok == 'true'
+        run: node scripts/update_speed.mjs recommend --count ${{ steps.parse.outputs.count }} > comment.md
+
+      - name: Comment to issue
+        if: steps.parse.outputs.ok == 'true'
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body-path: comment.md
